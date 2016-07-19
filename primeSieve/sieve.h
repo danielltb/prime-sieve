@@ -9,7 +9,8 @@
 #ifndef SIEVE_H
 #define SIEVE_H
 
-bigInt countPrimes(const byte* sieve, bigInt range);
-void runSieve(byte* sieve, bigInt range);
+bigInt countPrimes(const byte* sieve, bigInt range, bigInt len);
+void runSieve(byte* sieve, bigInt range, bigInt len);
+bigInt getAllocSize(bigInt range);
 
 #endif

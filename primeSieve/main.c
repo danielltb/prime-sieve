@@ -7,6 +7,7 @@
 //
 
 #include <stdlib.h>
+#include <limits.h>
 #include <stdio.h>
 #include <time.h>
 
@@ -15,10 +16,10 @@
 #include "smallSieve.h"
 #include "unitTests.h"
 
-#define LIMIT 2*(BYTES_ALLOC*8 - MOD) - 1
+#define LIMIT UINT_MAX
 
 int main(void) {
-   runUnitTests();
+   // runUnitTests();
    
    clock_t start, end;
    bigInt primeCount;
@@ -26,23 +27,24 @@ int main(void) {
    
    printf("Enter a bound to sieve up to: ");
    scanf("%u", &range);
-      
+   
    if ((range > 1) && (range <= LIMIT)) {
       printf("\nGenerating prime numbers up to the bound %u...\n", range);
       
       if (range > MOD) {
-         byte* sieve = calloc(BYTES_ALLOC, sizeof(byte));
-      
+         bigInt len = getAllocSize(range);
+         byte* sieve = calloc(len, sizeof(byte));
+         
          if (!sieve) {
             fputs("Sieve memory allocation failed.\n", stderr);
             exit(EXIT_FAILURE);
          }
          
          start = clock();
-         runSieve(sieve, range);
+         runSieve(sieve, range, len);
          end = clock();
          
-         primeCount = countPrimes(sieve, range);
+         primeCount = countPrimes(sieve, range, len);
          free(sieve);
          
       } else {

@@ -48,21 +48,24 @@ static const smallInt squareTable[NUM_WHEELS] = {
 };
 
 static inline void clearMults(byte* sieve, bigInt prime, bigInt bytePos,
-                              bigInt endByte, byte maxBit);
+                              bigInt endByte, byte maxBit, bigInt len);
 
-static void prepSieve(byte* sieve, bigInt endByte, byte maxBit);
+static void prepSieve(byte* sieve, bigInt endByte, byte maxBit, bigInt len);
 
 /* Interface functions */
+bigInt getAllocSize(bigInt range) {
+   return range/(2*BYTE_SIZE) + MOD;
+}
 
-void runSieve(byte* sieve, bigInt range) {
+void runSieve(byte* sieve, bigInt range, bigInt len) {
    // 1) Range calculations
    bigInt halfRange = (range - 1)/2;
-   byte maxBit = (byte)(1 << halfRange/BYTES_ALLOC);
-   bigInt endByte = halfRange % BYTES_ALLOC;
+   byte maxBit = (byte)(1 << halfRange/len);
+   bigInt endByte = halfRange % len;
    bigInt sqrtHalfRange = (bigInt)((sqrt(range) - 1)/2);
    
    // 2) Eliminate all wheel multiples
-   prepSieve(sieve, endByte, maxBit);
+   prepSieve(sieve, endByte, maxBit, len);
    
    // 3) Apply SoE algorithm on sieve to flag all composite numbers as 0
    bigInt incrSquare = MOD_SQUARE;
@@ -83,7 +86,7 @@ void runSieve(byte* sieve, bigInt range) {
          if (!(sieve[bytePos] & 1)) {
             // If number is prime, flag all its multiples as not prime (0)
             minPrimePos = incrSquare + squareTable[indx] + incr*wheelTable[indx]*2;
-            clearMults(sieve, wheelTable[indx] + incr*2, minPrimePos, endByte, maxBit);
+            clearMults(sieve, wheelTable[indx] + incr*2, minPrimePos, endByte, maxBit, len);
          }
       }
       
@@ -92,12 +95,12 @@ void runSieve(byte* sieve, bigInt range) {
    }
 }
 
-bigInt countPrimes(const byte* sieve, bigInt range) {
+bigInt countPrimes(const byte* sieve, bigInt range, bigInt len) {
    // Range calculations
    bigInt halfRange = (range - 1)/2;
-   byte maxBit = (byte)(1 << halfRange/BYTES_ALLOC);
-   bigInt endByte = halfRange % BYTES_ALLOC;
-   bigInt maxByte = (maxBit == 1) ? endByte: BYTES_ALLOC - 1;
+   byte maxBit = (byte)(1 << halfRange/len);
+   bigInt endByte = halfRange % len;
+   bigInt maxByte = (maxBit == 1) ? endByte: len - 1;
    
    bigInt primeCount = WHEEL_PRIMES;
    bool continueSieve = true;
@@ -110,8 +113,8 @@ bigInt countPrimes(const byte* sieve, bigInt range) {
          bytePos = halfTable[wheelIndx] + incr - wrapper;
          
          if (bytePos > maxByte) {
-            bytePos -= BYTES_ALLOC;
-            wrapper += BYTES_ALLOC;
+            bytePos -= len;
+            wrapper += len;
             
             if (bit < maxBit/2) {
                bit <<= 1;
@@ -133,14 +136,14 @@ bigInt countPrimes(const byte* sieve, bigInt range) {
 
 /* Helper functions */
 static inline void clearMults(byte* sieve, bigInt prime, bigInt bytePos,
-                              bigInt endByte, byte maxBit) {
+                              bigInt endByte, byte maxBit, bigInt len) {
    // Bit segments to be fully sieved
    for (byte bit = 1; bit < maxBit; bit <<= 1) {
-      for (; bytePos < BYTES_ALLOC; bytePos += prime) {
+      for (; bytePos < len; bytePos += prime) {
          sieve[bytePos] |= bit;
       }
       
-      bytePos -= BYTES_ALLOC; // Wrap around to start
+      bytePos -= len; // Wrap around to start
    }
    
    // Final segment that is partially sieved
@@ -149,7 +152,7 @@ static inline void clearMults(byte* sieve, bigInt prime, bigInt bytePos,
    }
 }
 
-static void prepSieve(byte* sieve, bigInt endByte, byte maxBit) {
+static void prepSieve(byte* sieve, bigInt endByte, byte maxBit, bigInt len) {
    // Eliminate all direct wheel multiples (skipping 1)
    bigInt bytePos = 0, wheel = 0;
    
@@ -159,11 +162,11 @@ static void prepSieve(byte* sieve, bigInt endByte, byte maxBit) {
       
       // Bit segments to be fully sieved
       for (byte bit = 1; bit < maxBit; bit <<= 1) {
-         for (; bytePos < BYTES_ALLOC; bytePos += wheel) {
+         for (; bytePos < len; bytePos += wheel) {
             sieve[bytePos] |= bit;
          }
          
-         bytePos -= BYTES_ALLOC; // Wrap around to start
+         bytePos -= len; // Wrap around to start
       }
       
       // Final segment that is partially sieved

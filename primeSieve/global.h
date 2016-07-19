@@ -11,7 +11,7 @@
 
 #include <stdint.h>
 
-#define BYTES_ALLOC 70000000
+#define BYTE_SIZE 8
 #define MOD 210
 
 typedef uint32_t bigInt;

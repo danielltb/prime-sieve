@@ -31,9 +31,6 @@ void runUnitTests(void) {
    printf("All tests passed. You are super awesome!\n");
 }
 
-// Remember to reanable link-time optimisation & O2/Ofast optimisation when done
-// Also disable malloc debugging
-
 static void smallSieveTests(void) {
    smallSieveTest(2, 1);
    smallSieveTest(3, 2);
@@ -71,13 +68,13 @@ static void smallSieveTests(void) {
 }
 
 static void primeSieveTests(void) {
-   /* for (bigInt i = MOD*MOD + 1; i <= MOD*MOD + 10; ++i) {
+   for (bigInt i = MOD*MOD + 1; i <= MOD*MOD + 10; ++i) {
       primeSieveTest(i, 4590);
    }
    
    primeSieveTest(MOD*MOD + MOD + 1, 4612);
-   primeSieveTest(MOD*MOD + 2*MOD + 1, 4612);
-   primeSieveTest(347534534, 18678164); */
+   primeSieveTest(MOD*MOD + 2*MOD + 1, 4627);
+   primeSieveTest(347534534, 18678164);
    
    primeSieveTest(211, 47);
    primeSieveTest(420, 81);
@@ -106,12 +103,12 @@ static void smallSieveTest(bigInt range, bigInt correctCount) {
 }
 
 static void primeSieveTest(bigInt range, bigInt correctCount) {
-   byte* sieve = calloc(BYTES_ALLOC, sizeof(byte)); // We need an allocator
-   //byte* sieve = calloc((range - 1)/16, sizeof(byte));
+   bigInt len = getAllocSize(range);
+   byte* sieve = calloc(len, sizeof(byte));
    assert(sieve);
    
-   runSieve(sieve, range);
-   bigInt count = countPrimes(sieve, range);
+   runSieve(sieve, range, len);
+   bigInt count = countPrimes(sieve, range, len);
    
    printf("Range %u: count = %u & should be %u\n", range, count, correctCount);
    assert(count == correctCount);
