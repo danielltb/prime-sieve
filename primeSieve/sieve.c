@@ -16,6 +16,9 @@
 #define WHEEL_PRIMES 46
 #define NUM_WHEELS 48
 
+#define FIRST_SQUARE_GAP 60
+#define SECOND_WHEEL 11
+
 #define HALF_MOD MOD/2
 #define MOD_SQUARE HALF_MOD*HALF_MOD*2
 #define ADD_GRAD MOD_SQUARE*2
@@ -30,7 +33,7 @@ static const byte wheelGaps[NUM_WHEELS] = {
 // Lookup table for (wheel - 1)/2
 static const byte halfGaps[NUM_WHEELS] = {
    5, 1, 2, 1, 2, 3, 1, 3, 2, 1, 2, 3, 3, 1, 3, 2, 1, 3, 2, 3, 4, 2, 1, 2,
-   1, 2, 4, 3, 2, 3, 1, 2, 3, 1, 3, 3, 2, 1, 2, 3, 1, 3, 2, 1, 2, 1, 5, 0
+   1, 2, 4, 3, 2, 3, 1, 2, 3, 1, 3, 3, 2, 1, 2, 3, 1, 3, 2, 1, 2, 1, 5, 1
 };
 
 // Lookup table for (wheel^2 - 1)/2
@@ -66,12 +69,11 @@ void runSieve(byte* sieve, bigInt range, int len) {
    bigInt minPrimePos = 0;
    bigInt squareBase;
    bigInt count = 0;
-   int bytePos = 0;
+   int bytePos = HALF_MOD;
    
    // Loop through all values of n (wheel fixed) in 'wheel + MOD*n'
    for (int incr = HALF_MOD; bytePos <= sqrtHalfRange; incr += HALF_MOD) {
       squareBase = 0;
-      bytePos = incr;
       
       // Loop through all wheels (n fixed) in 'wheel + MOD*n'
       for (int indx = 0; indx < NUM_WHEELS; ++indx) {
@@ -81,7 +83,7 @@ void runSieve(byte* sieve, bigInt range, int len) {
          
          if (!(sieve[bytePos] & 1)) {
             // If number is prime, flag all its multiples as not prime (0)
-            minPrimePos = incrSquare + squareBase + incr*2*(prime - incr*2);
+            minPrimePos = incrSquare + squareBase + incr*2*(prime - incr*2); // This probs can be incremented
             clearMults(sieve, prime, minPrimePos, endByte, maxBit, len);
          }
          
@@ -132,7 +134,7 @@ bigInt countPrimes(const byte* sieve, bigInt range, int len) {
          }
          
          primeCount += !(sieve[bytePos] & bit);
-         bytePos += halfGaps[wheelIndx];
+         bytePos += halfGaps[wheelIndx]; // Do I update this too?
       }
    }
    
@@ -159,8 +161,8 @@ static inline void clearMults(byte* sieve, bigInt prime, bigInt bytePos,
 
 static void prepSieve(byte* sieve, bigInt endByte, byte maxBit, int len) {
    // Eliminate all direct wheel multiples (skipping 1)
-   int bytePos = 0, wheel = 11;
-   bigInt squareBase = 60;
+   int bytePos = 0, wheel = SECOND_WHEEL;
+   bigInt squareBase = FIRST_SQUARE_GAP;
    
    for (int wheelIndx = 1; wheelIndx < NUM_WHEELS; ++wheelIndx) {
       bytePos = squareBase; // Min value to be sieved
