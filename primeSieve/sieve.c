@@ -97,9 +97,9 @@ bigInt countPrimes(const byte* sieve, bigInt range) {
    bigInt halfRange = (range - 1)/2;
    byte maxBit = (byte)(1 << halfRange/BYTES_ALLOC);
    bigInt endByte = halfRange % BYTES_ALLOC;
-   bigInt maxByte = (maxBit == 1) ? endByte : BYTES_ALLOC;
+   bigInt maxByte = (maxBit == 1) ? endByte: BYTES_ALLOC - 1;
    
-   bigInt primeCount = WHEEL_PRIMES + 1;
+   bigInt primeCount = WHEEL_PRIMES;
    bool continueSieve = true;
    bigInt bytePos = 0;
    bigInt wrapper = 0;
@@ -109,7 +109,7 @@ bigInt countPrimes(const byte* sieve, bigInt range) {
       for (int wheelIndx = 0; wheelIndx < NUM_WHEELS; ++wheelIndx) {
          bytePos = halfTable[wheelIndx] + incr - wrapper;
          
-         if (bytePos >= maxByte) {
+         if (bytePos > maxByte) {
             bytePos -= BYTES_ALLOC;
             wrapper += BYTES_ALLOC;
             
