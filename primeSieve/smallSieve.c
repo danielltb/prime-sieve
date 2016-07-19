@@ -12,9 +12,9 @@
 #include "global.h"
 #include "smallSieve.h"
 
-void runSmallSieve(smallInt* sieve, bigInt range) {
-   int sqrtRange = (int)sqrt(range);
-   int rangeCast = (int)range;
+void runSmallSieve(smallInt* sieve, int range) {
+   int sqrtRange = sqrt(range);
+   int rangeCast = range;
    
    for (int prime = 2; prime <= sqrtRange; ++prime) {
       if (!sieve[prime]) {
@@ -25,9 +25,9 @@ void runSmallSieve(smallInt* sieve, bigInt range) {
    }
 }
 
-bigInt countSmallPrimes(smallInt* sieve, bigInt range) {
+int countSmallPrimes(smallInt* sieve, int range) {
    int rangeCast = (int)range;
-   bigInt primeCount = 0;
+   int primeCount = 0;
    
    for (int prime = 2; prime <= rangeCast; ++prime) {
       primeCount += !sieve[prime];

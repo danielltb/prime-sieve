@@ -103,14 +103,14 @@ static void smallSieveTest(bigInt range, bigInt correctCount) {
 }
 
 static void primeSieveTest(bigInt range, bigInt correctCount) {
-   bigInt len = getAllocSize(range);
+   int len = getAllocSize(range);
    byte* sieve = calloc(len, sizeof(byte));
    assert(sieve);
    
    runSieve(sieve, range, len);
-   bigInt count = countPrimes(sieve, range, len);
+   int count = countPrimes(sieve, range, len);
    
-   printf("Range %llu: count = %llu & should be %llu\n", range, count, correctCount);
+   printf("Range %llu: count = %d & should be %llu\n", range, count, correctCount);
    assert(count == correctCount);
    free(sieve);
 }

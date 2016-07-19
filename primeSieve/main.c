@@ -32,7 +32,7 @@ int main(void) {
       printf("\nGenerating prime numbers up to the bound %llu...\n", range);
       
       if (range > MOD) {
-         bigInt len = getAllocSize(range);
+         int len = getAllocSize(range);
          byte* sieve = calloc(len, sizeof(byte));
          
          if (!sieve) {

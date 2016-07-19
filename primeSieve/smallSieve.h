@@ -9,7 +9,7 @@
 #ifndef SMALL_SIEVE_H
 #define SMALL_SIEVE_H
 
-bigInt countSmallPrimes(smallInt* sieve, bigInt range);
-void runSmallSieve(smallInt* sieve, bigInt range);
+int countSmallPrimes(smallInt* sieve, int range);
+void runSmallSieve(smallInt* sieve, int range);
 
 #endif
