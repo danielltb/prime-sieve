@@ -4,7 +4,7 @@
 //
 //  Created by Thomas Daniell on 17/07/2016.
 //  Copyright © 2016 Thomas Daniell. All rights reserved.
-//  Do testing, allocator and small sieve next!!
+//
 
 #include <stdbool.h>
 #include <stdlib.h>
@@ -95,19 +95,23 @@ void runSieve(byte* sieve, bigInt range, bigInt len) {
    }
 }
 
+// Optimise this function!!
 bigInt countPrimes(const byte* sieve, bigInt range, bigInt len) {
+   bigInt primeCount = WHEEL_PRIMES;
+   bool continueSieve = true;
+   
    // Range calculations
    bigInt halfRange = (range - 1)/2;
    byte maxBit = (byte)(1 << halfRange/len);
    bigInt endByte = halfRange % len;
-   bigInt maxByte = (maxBit == 1) ? endByte: len - 1;
+   bigInt maxByte = (maxBit == 1) ? endByte : len - 1;
    
-   bigInt primeCount = WHEEL_PRIMES;
-   bool continueSieve = true;
+   // Sieve position tracking variables
    bigInt bytePos = 0;
    bigInt wrapper = 0;
    byte bit = 1;
    
+   // Iterate through wheel factorised sieve and count all primes
    for (bigInt incr = HALF_MOD; continueSieve; incr += HALF_MOD) {
       for (int wheelIndx = 0; wheelIndx < NUM_WHEELS; ++wheelIndx) {
          bytePos = halfTable[wheelIndx] + incr - wrapper;

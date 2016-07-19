@@ -19,11 +19,11 @@
 #define LIMIT ULONG_MAX
 
 int main(void) {
-   //runUnitTests();
-   
    clock_t start, end;
    bigInt primeCount;
    bigInt range;
+   
+   //runUnitTests();
    
    printf("Enter a bound to sieve up to: ");
    scanf("%llu", &range);
