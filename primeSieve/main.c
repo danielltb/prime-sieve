@@ -19,17 +19,17 @@
 #define LIMIT UINT_MAX
 
 int main(void) {
-   // runUnitTests();
+   //runUnitTests();
    
    clock_t start, end;
    bigInt primeCount;
    bigInt range;
    
    printf("Enter a bound to sieve up to: ");
-   scanf("%u", &range);
+   scanf("%llu", &range);
    
    if ((range > 1) && (range <= LIMIT)) {
-      printf("\nGenerating prime numbers up to the bound %u...\n", range);
+      printf("\nGenerating prime numbers up to the bound %llu...\n", range);
       
       if (range > MOD) {
          bigInt len = getAllocSize(range);
@@ -59,7 +59,7 @@ int main(void) {
       
       double diff = (double)(end - start)/CLOCKS_PER_SEC;
       printf("\nSieve generated in %lf seconds, counting primes...\n", diff);
-      printf("%d primes counted between 0 and %u\n", primeCount, range);
+      printf("%llu primes counted between 0 and %llu\n", primeCount, range);
    } else if (range == 1) {
       printf("Bound must be at least two to count any prime numbers.\n");
    } else {

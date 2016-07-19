@@ -28,7 +28,7 @@ void runUnitTests(void) {
    printf("2) Conducting main prime sieve tests...\n");
    primeSieveTests();
    
-   printf("All tests passed. You are super awesome!\n");
+   printf("All tests passed. You are super awesome!\n\n");
 }
 
 static void smallSieveTests(void) {
@@ -89,7 +89,7 @@ static void primeSieveTests(void) {
    primeSieveTest(1000000000, 50847534);
    //primeSieveTest(10000000000, 455052511);
    
-   printf("\nAll prime sieve tests passed.\n");
+   printf("- All prime sieve tests passed.\n\n");
 }
 
 static void smallSieveTest(bigInt range, bigInt correctCount) {
@@ -110,7 +110,7 @@ static void primeSieveTest(bigInt range, bigInt correctCount) {
    runSieve(sieve, range, len);
    bigInt count = countPrimes(sieve, range, len);
    
-   printf("Range %u: count = %u & should be %u\n", range, count, correctCount);
+   printf("Range %llu: count = %llu & should be %llu\n", range, count, correctCount);
    assert(count == correctCount);
    free(sieve);
 }

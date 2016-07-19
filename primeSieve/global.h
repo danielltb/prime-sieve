@@ -14,7 +14,7 @@
 #define BYTE_SIZE 8
 #define MOD 210
 
-typedef uint32_t bigInt;
+typedef uint64_t bigInt;
 typedef uint16_t smallInt;
 typedef uint8_t byte;
 
