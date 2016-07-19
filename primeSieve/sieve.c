@@ -21,12 +21,10 @@
 #define ADD_GRAD MOD_SQUARE*2
 #define ADD_INT MOD_SQUARE*3
 
-// Converting to ints and considering gap at the end
-
 // Lookup table for wheels used in SoE algorithm
 static const byte wheelGaps[NUM_WHEELS] = {
    10, 2, 4, 2, 4, 6, 2, 6, 4, 2, 4, 6, 6, 2, 6, 4, 2, 6, 4, 6, 8, 4, 2, 4,
-   2, 4, 8, 6, 4, 6, 2, 4, 6, 2, 6, 6, 4, 2, 4, 6, 2, 6, 4, 2, 4, 2, 10, 0
+   2, 4, 8, 6, 4, 6, 2, 4, 6, 2, 6, 6, 4, 2, 4, 6, 2, 6, 4, 2, 4, 2, 10, 2
 };
 
 // Lookup table for (wheel - 1)/2
@@ -64,14 +62,14 @@ void runSieve(byte* sieve, bigInt range, int len) {
    
    // 3) Apply SoE algorithm on sieve to flag all composite numbers as 0
    bigInt incrSquare = MOD_SQUARE;
-   bigInt prime, count = 0;
+   bigInt prime = 1 + MOD;
    bigInt minPrimePos = 0;
    bigInt squareBase;
+   bigInt count = 0;
    int bytePos = 0;
    
    // Loop through all values of n (wheel fixed) in 'wheel + MOD*n'
    for (int incr = HALF_MOD; bytePos <= sqrtHalfRange; incr += HALF_MOD) {
-      prime = 1 + incr*2;
       squareBase = 0;
       bytePos = incr;
       
