@@ -6,7 +6,6 @@
 //  Copyright © 2016 Thomas Daniell. All rights reserved.
 //
 
-#include <stdbool.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
@@ -101,7 +100,7 @@ void runSieve(byte* sieve, bigInt range, int len) {
 // Optimise this function!!
 bigInt countPrimes(const byte* sieve, bigInt range, int len) {
    bigInt primeCount = WHEEL_PRIMES;
-   bool continueSieve = true;
+   int doLoop = 1;
    
    // Range calculations
    bigInt halfRange = (range - 1)/2;
@@ -115,7 +114,7 @@ bigInt countPrimes(const byte* sieve, bigInt range, int len) {
    byte bit = 1;
    
    // Iterate through wheel factorised sieve and count all primes
-   for (bigInt incr = HALF_MOD; continueSieve; incr += HALF_MOD) {
+   for (bigInt incr = HALF_MOD; doLoop; incr += HALF_MOD) {
       bytePos = incr - wrapper;
       
       for (int wheelIndx = 0; wheelIndx < NUM_WHEELS; ++wheelIndx) {
@@ -129,7 +128,7 @@ bigInt countPrimes(const byte* sieve, bigInt range, int len) {
                maxByte = endByte;
                bit <<= 1;
             } else {
-               continueSieve = false;
+               doLoop = 0;
                break;
             }
          }

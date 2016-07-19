@@ -14,7 +14,6 @@
 #include "global.h"
 #include "sieve.h"
 #include "smallSieve.h"
-#include "unitTests.h"
 
 #define LIMIT ULONG_MAX
 
@@ -22,8 +21,6 @@ int main(void) {
    clock_t start, end;
    bigInt primeCount;
    bigInt range;
-   
-   //runUnitTests();
    
    printf("Enter a bound to sieve up to: ");
    scanf("%llu", &range);
