@@ -16,7 +16,7 @@
 #include "smallSieve.h"
 #include "unitTests.h"
 
-#define LIMIT UINT_MAX
+#define LIMIT ULONG_MAX
 
 int main(void) {
    //runUnitTests();
