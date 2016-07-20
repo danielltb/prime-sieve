@@ -74,7 +74,6 @@ static void primeSieveTests(void) {
    
    primeSieveTest(MOD*MOD + MOD + 1, 4612);
    primeSieveTest(MOD*MOD + 2*MOD + 1, 4627);
-   primeSieveTest(347534534, 18678164);
    
    primeSieveTest(211, 47);
    primeSieveTest(420, 81);
@@ -86,6 +85,7 @@ static void primeSieveTests(void) {
    primeSieveTest(1000000, 78498);
    primeSieveTest(10000000, 664579);
    primeSieveTest(100000000, 5761455);
+   primeSieveTest(347534534, 18678164);
    primeSieveTest(1000000000, 50847534);
    //primeSieveTest(10000000000, 455052511);
    
@@ -114,8 +114,6 @@ static void primeSieveTest(bigInt range, bigInt correctCount) {
    assert(count == correctCount);
    free(sieve);
 }
-
-
 
 
 
