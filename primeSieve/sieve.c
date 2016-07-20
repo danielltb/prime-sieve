@@ -43,9 +43,6 @@ static const smallInt squareTable[NUM_WHEELS] = {
    18240, 18624, 19404, 19800, 21840
 };
 
-static inline void clearMults(byte* sieve, bigInt prime, bigInt endByte,
-                              byte maxBit, int len);
-
 static void prepSieve(byte* sieve, bigInt endByte, byte maxBit, int len);
 
 /* Interface functions */
@@ -65,6 +62,7 @@ void runSieve(byte* sieve, bigInt range, int len) {
    
    // 3) Apply SoE algorithm on sieve to flag all composite numbers as 0
    bigInt bytePos = HALF_MOD;
+   bigInt prime = 1 + MOD;
    
    while (bytePos <= sqrtHalfRange) {
       for (int indx = 0; indx < NUM_WHEELS; ++indx) {
@@ -72,11 +70,24 @@ void runSieve(byte* sieve, bigInt range, int len) {
          // If number is prime, flag all its multiples as not prime (0)
          // Note that all candidates lie in the first bit segment
          if (!(sieve[bytePos] & 1)) {
-            clearMults(sieve, 1 + 2*bytePos, endByte, maxBit, len);
+            bigInt multBytePos = prime + 2*bytePos*bytePos - 1;
+            
+            for (byte bit = 1; bit < maxBit; bit <<= 1) {
+               for (; multBytePos < len; multBytePos += prime) {
+                  sieve[multBytePos] |= bit;
+               }
+               
+               multBytePos -= len; // Wrap around to start
+            }
+            
+            for (; multBytePos <= endByte; multBytePos += prime) {
+               sieve[multBytePos] |= maxBit;
+            }
          }
          
          // Only primes on wheel spokes considered
          bytePos += halfGaps[indx];
+         prime += wheelGaps[indx];
       }
    }
 }
@@ -123,26 +134,6 @@ bigInt countPrimes(const byte* sieve, bigInt range, int len) {
    }
    
    return primeCount;
-}
-
-/* Helper functions */
-static inline void clearMults(byte* sieve, bigInt prime, bigInt endByte,
-                              byte maxBit, int len) {
-   bigInt bytePos = (prime*prime - 1)/2;
-   
-   // Bit segments to be fully sieved
-   for (byte bit = 1; bit < maxBit; bit <<= 1) {
-      for (; bytePos < len; bytePos += prime) {
-         sieve[bytePos] |= bit;
-      }
-      
-      bytePos -= len; // Wrap around to start
-   }
-   
-   // Final segment that is partially sieved
-   for (; bytePos <= endByte; bytePos += prime) {
-      sieve[bytePos] |= maxBit;
-   }
 }
 
 static void prepSieve(byte* sieve, bigInt endByte, byte maxBit, int len) {

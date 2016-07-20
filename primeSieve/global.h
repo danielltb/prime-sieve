@@ -28,7 +28,12 @@ typedef uint8_t byte;
 
 // Consider endianness??
 
-/* Sieve specifications:
+/* Working out for prime^2:
+  2*bytePos*bytePos - 1;
+ 
+*/
+
+/* Original sieve specifications:
  For the time being, we always want to allocate 1 000 000 bytes of memory. The sieve is divided into 8 segments,
  each of which is stored in a unique bit across all 1 000 000 bytes. Every number in the sieve is represented by
  a unique bit and byte 'coordinate'. The numbers are divided as follows):
