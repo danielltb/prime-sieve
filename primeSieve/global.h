@@ -12,6 +12,7 @@
 #include <stdint.h>
 
 #define BYTE_SIZE 8
+#define TRUE 1
 #define MOD 210
 
 typedef uint64_t bigInt;

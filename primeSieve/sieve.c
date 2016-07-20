@@ -39,12 +39,6 @@ static const smallInt squareTable[NUM_WHEELS] = {
    18240, 18624, 19404, 19800, 21840
 };
 
-// Lookup table for 2*halfGaps^2
-static const byte halfGapSquare[NUM_WHEELS] = {
-   50, 2, 8, 2, 8, 18, 2, 18, 8, 2, 8, 18, 18, 2, 18, 8, 2, 18, 8, 18, 32, 8, 2, 8,
-   2, 8, 32, 18, 8, 18, 2, 8, 18, 2, 18, 18, 8, 2, 8, 18, 2, 18, 8, 2, 8, 2, 50, 2
-};
-
 static void wheelFactorise(byte* sieve, bigInt endByte, byte maxBit, int len);
 
 /* Interface functions */
@@ -54,18 +48,16 @@ int getAllocSize(bigInt range) {
 
 void runSieve(byte* sieve, bigInt range, int len) {
    // 1) Range calculations
-   bigInt halfRange = (range - 1)/2;
-   byte maxBit = (byte)(1 << halfRange/len);
    bigInt sqrtHalfRange = (sqrt(range) - 1)/2;
+   bigInt halfRange = (range - 1)/2;
    bigInt endByte = halfRange % len;
+   byte maxBit = (byte)(1 << halfRange/len);
    
    // 2) Eliminate all wheel multiples from sieve
    wheelFactorise(sieve, endByte, maxBit, len);
    
    // 3) Apply SoE algorithm on sieve to flag all composite numbers as 0
-   bigInt minPrimePos = MOD*(HALF_MOD + 1);
    bigInt bytePos = HALF_MOD;
-   bigInt prime = 1 + MOD;
    
    while (bytePos <= sqrtHalfRange) {
       for (int indx = 0; indx < NUM_WHEELS; ++indx) {
@@ -73,7 +65,8 @@ void runSieve(byte* sieve, bigInt range, int len) {
          // If number is prime, flag all its multiples as not prime (0)
          // Note that all candidates lie in the first bit segment
          if (!(sieve[bytePos] & 1)) {
-            bigInt multBytePos = minPrimePos;
+            bigInt prime = 2*bytePos + 1;
+            bigInt multBytePos = 2*bytePos*(bytePos + 1);
             
             for (byte bit = 1; bit < maxBit; bit <<= 1) {
                for (; multBytePos < len; multBytePos += prime) {
@@ -88,11 +81,8 @@ void runSieve(byte* sieve, bigInt range, int len) {
             }
          }
          
-         // Should we use a (restricted?) pointer instead??
          // Only primes on wheel spokes considered
-         minPrimePos += prime*wheelGaps[indx] + halfGapSquare[indx];
          bytePos += halfGaps[indx];
-         prime += wheelGaps[indx];
       }
    }
 }
@@ -100,7 +90,8 @@ void runSieve(byte* sieve, bigInt range, int len) {
 // Optimise this function!!
 bigInt countPrimes(const byte* sieve, bigInt range, int len) {
    bigInt primeCount = WHEEL_PRIMES;
-   int doLoop = 1;
+   bigInt bytePos = HALF_MOD;
+   byte bit = 1;
    
    // Range calculations
    bigInt halfRange = (range - 1)/2;
@@ -108,19 +99,11 @@ bigInt countPrimes(const byte* sieve, bigInt range, int len) {
    int endByte = halfRange % len;
    int maxByte = (maxBit == 1) ? endByte : len - 1;
    
-   // Sieve position tracking variables
-   bigInt wrapper = 0;
-   int bytePos = 0;
-   byte bit = 1;
-   
    // Iterate through wheel factorised sieve and count all primes
-   for (bigInt incr = HALF_MOD; doLoop; incr += HALF_MOD) {
-      bytePos = incr - wrapper;
-      
+   while (TRUE) {
       for (int wheelIndx = 0; wheelIndx < NUM_WHEELS; ++wheelIndx) {
          if (bytePos > maxByte) {
             bytePos -= len;
-            wrapper += len;
             
             if (bit < maxBit/2) {
                bit <<= 1;
@@ -128,8 +111,7 @@ bigInt countPrimes(const byte* sieve, bigInt range, int len) {
                maxByte = endByte;
                bit <<= 1;
             } else {
-               doLoop = 0;
-               break;
+               return primeCount;
             }
          }
          
@@ -137,8 +119,6 @@ bigInt countPrimes(const byte* sieve, bigInt range, int len) {
          bytePos += halfGaps[wheelIndx]; // Do I update this too?
       }
    }
-   
-   return primeCount;
 }
 
 static void wheelFactorise(byte* sieve, bigInt endByte, byte maxBit, int len) {
