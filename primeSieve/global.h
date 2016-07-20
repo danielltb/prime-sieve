@@ -20,6 +20,12 @@ typedef uint8_t byte;
 
 #endif
 
+/* Sieve segmentation plan: 
+ - Allocate a fixed segment size based on the given input range
+ -
+ 
+ */
+
 // Consider endianness??
 
 /* Sieve specifications:

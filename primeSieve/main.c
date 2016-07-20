@@ -26,7 +26,7 @@ int main(void) {
    scanf("%llu", &range);
    
    if ((range > 1) && (range <= LIMIT)) {
-      printf("\nGenerating prime numbers up to the bound %llu...\n", range);
+      printf("Generating prime numbers up to the bound %llu...\n", range);
       
       if (range > MOD) {
          int len = getAllocSize(range);
@@ -56,8 +56,8 @@ int main(void) {
       
       double diff = (double)(end - start)/CLOCKS_PER_SEC;
       printf("\nSieve generated in %lf seconds, counting primes...\n", diff);
-      printf("%llu primes counted between 0 and %llu\n", primeCount, range);
-   } else if (range == 1) {
+      printf("%llu primes counted between 0 and %llu (inclusive)\n\n", primeCount, range);
+   } else if (range == 0 || range == 1) {
       printf("Bound must be at least two to count any prime numbers.\n");
    } else {
       printf("Bound specified is not in the valid range.\n");
