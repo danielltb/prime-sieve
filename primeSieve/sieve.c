@@ -51,7 +51,7 @@ void runSieve(byte* sieve, bigInt range, int len) {
    bigInt sqrtHalfRange = (sqrt(range) - 1)/2;
    bigInt halfRange = (range - 1)/2;
    bigInt endByte = halfRange % len;
-   byte maxBit = (byte)(1 << halfRange/len);
+   byte maxBit = 1 << halfRange/len;
    
    // 2) Eliminate all wheel multiples from sieve
    wheelFactorise(sieve, endByte, maxBit, len);
@@ -95,7 +95,7 @@ bigInt countPrimes(const byte* sieve, bigInt range, int len) {
    
    // Range calculations
    bigInt halfRange = (range - 1)/2;
-   byte maxBit = (byte)(1 << halfRange/len);
+   byte maxBit = 1 << halfRange/len;
    int endByte = halfRange % len;
    int maxByte = (maxBit == 1) ? endByte : len - 1;
    
@@ -116,7 +116,7 @@ bigInt countPrimes(const byte* sieve, bigInt range, int len) {
          }
          
          primeCount += !(sieve[bytePos] & bit);
-         bytePos += halfGaps[wheelIndx]; // Do I update this too?
+         bytePos += halfGaps[wheelIndx];
       }
    }
 }
