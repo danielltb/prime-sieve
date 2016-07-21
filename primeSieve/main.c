@@ -39,9 +39,9 @@ int main(void) {
          
          start = clock();
          runSieve(sieve, range, len);
-         end = clock();
-         
          primeCount = countPrimes(sieve, range, len);
+         
+         end = clock();
          free(sieve);
          
       } else {
@@ -49,9 +49,9 @@ int main(void) {
          
          start = clock();
          runSmallSieve(sieve, range);
-         end = clock();
-         
          primeCount = countSmallPrimes(sieve, range);
+         
+         end = clock();
       }
       
       double diff = (double)(end - start)/CLOCKS_PER_SEC;

@@ -51,15 +51,43 @@ void runSieve(byte* sieve, bigInt range, int len) {
    bigInt sqrtHalfRange = (sqrt(range) - 1)/2;
    bigInt halfRange = (range - 1)/2;
    bigInt endByte = halfRange % len;
-   byte maxBit = (byte)(1 << halfRange/len);
+   byte maxBit = 1 << halfRange/len;
    
    // 2) Eliminate all wheel multiples from sieve
    wheelFactorise(sieve, endByte, maxBit, len);
    
    // 3) Apply SoE algorithm on sieve to flag all composite numbers as 0
-   bigInt bytePos = HALF_MOD;
+   //bigInt bytePos = HALF_MOD;
+   static const byte halfTable[NUM_WHEELS] = {
+      0, 5, 6, 8, 9, 11, 14, 15, 18, 20, 21, 23, 26, 29, 30, 33,
+      35, 36, 39, 41, 44, 48, 50, 51, 53, 54, 56, 60, 63, 65, 68,
+      69, 71, 74, 75, 78, 81, 83, 84, 86, 89, 90, 93, 95, 96, 98,
+      99, 104
+   };
    
-   while (bytePos <= sqrtHalfRange) {
+   for (int indx = 0; indx < NUM_WHEELS; ++indx) {
+      for (bigInt bytePos = halfTable[indx] + HALF_MOD; bytePos <= sqrtHalfRange; bytePos += HALF_MOD) {
+         if (!(sieve[bytePos] & 1)) {
+            bigInt prime = 2*bytePos + 1;
+            bigInt multBytePos = 2*bytePos*(bytePos + 1);
+            
+            for (byte bit = 1; bit < maxBit; bit <<= 1) {
+               for (; multBytePos < len; multBytePos += prime) {
+                  sieve[multBytePos] |= bit;
+               }
+               
+               multBytePos -= len; // Wrap around to start
+            }
+            
+            for (; multBytePos <= endByte; multBytePos += prime) {
+               sieve[multBytePos] |= maxBit;
+            }
+         }
+      }
+   }
+   
+   
+   /* while (bytePos <= sqrtHalfRange) {
       for (int indx = 0; indx < NUM_WHEELS; ++indx) {
          
          // If number is prime, flag all its multiples as not prime (0)
@@ -84,7 +112,7 @@ void runSieve(byte* sieve, bigInt range, int len) {
          // Only primes on wheel spokes considered
          bytePos += halfGaps[indx];
       }
-   }
+   }*/
 }
 
 // Optimise this function!!
@@ -95,13 +123,13 @@ bigInt countPrimes(const byte* sieve, bigInt range, int len) {
    
    // Range calculations
    bigInt halfRange = (range - 1)/2;
-   byte maxBit = (byte)(1 << halfRange/len);
+   byte maxBit = 1 << halfRange/len;
    int endByte = halfRange % len;
    int maxByte = (maxBit == 1) ? endByte : len - 1;
    
    // Iterate through wheel factorised sieve and count all primes
-   while (TRUE) {
-      for (int wheelIndx = 0; wheelIndx < NUM_WHEELS; ++wheelIndx) {
+   while (TRUE) { // Swapping inner and outer loops?
+      for (int indx = 0; indx < NUM_WHEELS; ++indx) {
          if (bytePos > maxByte) {
             bytePos -= len;
             
@@ -116,10 +144,13 @@ bigInt countPrimes(const byte* sieve, bigInt range, int len) {
          }
          
          primeCount += !(sieve[bytePos] & bit);
-         bytePos += halfGaps[wheelIndx]; // Do I update this too?
+         bytePos += halfGaps[indx];
       }
    }
 }
+
+// Idea: Assume all numbers are not prime and only set ones lying in the wheel as candidates
+//
 
 static void wheelFactorise(byte* sieve, bigInt endByte, byte maxBit, int len) {
    // Eliminate all direct wheel multiples (skipping 1)
