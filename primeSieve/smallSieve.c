@@ -14,11 +14,10 @@
 
 void runSmallSieve(smallInt* sieve, int range) {
    int sqrtRange = sqrt(range);
-   int rangeCast = range;
    
    for (int prime = 2; prime <= sqrtRange; ++prime) {
       if (!sieve[prime]) {
-         for (int comp = prime*prime; comp <= rangeCast; comp += prime) {
+         for (int comp = prime*prime; comp <= range; comp += prime) {
             sieve[comp] = 1;
          }
       }
@@ -26,10 +25,9 @@ void runSmallSieve(smallInt* sieve, int range) {
 }
 
 int countSmallPrimes(smallInt* sieve, int range) {
-   int rangeCast = (int)range;
    int primeCount = 0;
    
-   for (int prime = 2; prime <= rangeCast; ++prime) {
+   for (int prime = 2; prime <= range; ++prime) {
       primeCount += !sieve[prime];
    }
    
