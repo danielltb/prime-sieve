@@ -39,9 +39,9 @@ int main(void) {
          
          start = clock();
          runSieve(sieve, range, len);
-         primeCount = countPrimes(sieve, range, len);
-         
          end = clock();
+         
+         primeCount = countPrimes(sieve, range, len);
          free(sieve);
          
       } else {
