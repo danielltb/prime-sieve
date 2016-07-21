@@ -87,7 +87,6 @@ void runSieve(byte* sieve, bigInt range, int len) {
    }
 }
 
-// Optimise this function!!
 bigInt countPrimes(const byte* sieve, bigInt range, int len) {
    bigInt primeCount = WHEEL_PRIMES;
    bigInt bytePos = HALF_MOD;

@@ -83,10 +83,12 @@ static void primeSieveTests(void) {
    primeSieveTest(30030, 3248);
    primeSieveTest(100000, 9592);
    primeSieveTest(1000000, 78498);
+   primeSieveTest(3437869, 246094);
    primeSieveTest(10000000, 664579);
    primeSieveTest(100000000, 5761455);
    primeSieveTest(347534534, 18678164);
    primeSieveTest(1000000000, 50847534);
+   primeSieveTest(1124344445, 56831090);
    //primeSieveTest(10000000000, 455052511);
    
    printf("- All prime sieve tests passed.\n\n");
